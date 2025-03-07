@@ -1,16 +1,27 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:5000/api/auth";
 
+export const register = async (name: string, email: string, password: string) => {
+  const response = await axios.post(`${API_URL}/register`, { name, email, password });
+  localStorage.setItem("token", response.data.token);
+  return response.data;
+};
+
 export const login = async (email: string, password: string) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
-  Cookies.set("token", response.data.token);
+  localStorage.setItem("token", response.data.token);
   return response.data;
 };
 
 export const logout = () => {
-  Cookies.remove("token");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 };
 
-export const getAuthToken = () => Cookies.get("token");
+export const getAuthToken = () => localStorage.getItem("token");
+
+export const getUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
+};
