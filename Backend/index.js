@@ -4,11 +4,14 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 
 require("dotenv").config();
+
+
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
+app.use(cors({ origin: "*", methods: ["GET", "POST"], allowedHeaders: ["Authorization", "Content-Type"] }));
 // Middleware
 app.use(express.json()); // Parse JSON request body
 app.use(cors()); // Enable CORS

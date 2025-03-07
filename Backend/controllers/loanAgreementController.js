@@ -40,34 +40,47 @@ const replacePlaceholders = (template, data) => {
 // Generate Loan Agreement PDF
 exports.generateAgreement = async (req, res) => {
   try {
+    console.log("Received request to generate agreement:", req.body); // Debug request data
+
     const { templateName, userData } = req.body;
 
+    if (!templateName || !userData) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
     const template = await LoanAgreement.findOne({ templateName });
+
     if (!template) {
       return res.status(404).json({ message: "Template not found" });
     }
 
     const filledText = replacePlaceholders(template.templateText, userData);
+    const filename = `${userData.BORROWER_NAME.replace(/\s+/g, "_")}-loan-agreement.pdf`;
+    const pdfPath = path.join(__dirname, `../uploads/${filename}`);
 
-    // Create a PDF
-    const pdfPath = path.join(
-      __dirname,
-      `../uploads/${userData.BORROWER_NAME}-loan-agreement.pdf`
-    );
+    // Create PDF
     const doc = new PDFDocument();
-    doc.pipe(fs.createWriteStream(pdfPath));
-
+    const stream = fs.createWriteStream(pdfPath);
+    doc.pipe(stream);
     doc.fontSize(12).text(filledText, { align: "left" });
-
     doc.end();
 
-    res.status(200).json({ message: "Agreement generated", pdfPath });
+    stream.on("finish", () => {
+      console.log("PDF Generated Successfully:", filename);
+      res.status(200).json({ message: "Agreement generated", pdfPath: filename });
+    });
+
+    stream.on("error", (err) => {
+      console.error("PDF Generation Error:", err);
+      res.status(500).json({ message: "Error generating PDF", error: err.message });
+    });
+
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error generating agreement", error: error.message });
+    console.error("Error generating agreement:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Download Generated PDF
 exports.downloadAgreement = (req, res) => {

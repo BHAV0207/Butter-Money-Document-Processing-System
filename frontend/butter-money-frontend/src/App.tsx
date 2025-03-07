@@ -5,6 +5,7 @@ import Register from "./pages/Regitser";
 import Dashboard from "./pages/Dashboard";
 import LoanAgreement from "./pages/LoanAgreement";
 import ProtectedRoute from "./components/ProtectedRouter";
+import "./App.css";
 
 function App() {
   return (

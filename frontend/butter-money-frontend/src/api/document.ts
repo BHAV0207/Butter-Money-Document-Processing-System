@@ -4,19 +4,33 @@ import { getAuthToken } from "./auth";
 const API_URL = "http://localhost:5000/api/documents";
 
 export const uploadFile = async (file: File) => {
-  const formData = new FormData();
-  formData.append("file", file);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  return axios.post(`${API_URL}/upload`, formData, {
-    headers: {
-      Authorization: `Bearer ${getAuthToken()}`,
-      "Content-Type": "multipart/form-data",
-    },
-  });
+    const response = await axios.post(`${API_URL}/upload`, formData, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
 };
 
 export const extractDataFromPDF = async (filename: string) => {
-  return axios.post(`${API_URL}/extract`, { filename }, {
-    headers: { Authorization: `Bearer ${getAuthToken()}` },
-  });
+  try {
+    const response = await axios.post(`${API_URL}/extract`, { filename }, {
+      headers: { Authorization: `Bearer ${getAuthToken()}` },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error extracting data:", error);
+    throw error;
+  }
 };
