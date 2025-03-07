@@ -1,5 +1,3 @@
----
-
 ## **📄 Document Processing System (Butter Money Loan Application)**
 This is a **full-stack document processing system** that allows users to **upload, process, and generate loan agreements**. The system supports:
 ✅ **User authentication (Register/Login with JWT)**  
