@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getAuthToken } from "./auth";
 
-const API_URL = "http://localhost:5000/api/loan";
+const API_URL =
+  "https://butter-money-document-processing-system-1.onrender.com/api/loan";
 
 export const generateLoanAgreement = async (
   templateName: string,
@@ -21,10 +22,10 @@ export const generateLoanAgreement = async (
       }
     );
 
-    console.log("Response from generateAgreement API:", response.data);
+    console.log("Response from API:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error in generateLoanAgreement:", error);
+    console.error("Error generating loan agreement:", error);
     throw error;
   }
 };

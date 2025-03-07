@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getAuthToken } from "./auth";
 
-const API_URL = "http://localhost:5000/api/documents";
+const API_URL =
+  "https://butter-money-document-processing-system-1.onrender.com/api/documents";
 
 export const uploadFile = async (file: File) => {
   try {
@@ -24,9 +25,13 @@ export const uploadFile = async (file: File) => {
 
 export const extractDataFromPDF = async (filename: string) => {
   try {
-    const response = await axios.post(`${API_URL}/extract`, { filename }, {
-      headers: { Authorization: `Bearer ${getAuthToken()}` },
-    });
+    const response = await axios.post(
+      `${API_URL}/extract`,
+      { filename },
+      {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      }
+    );
 
     return response.data;
   } catch (error) {

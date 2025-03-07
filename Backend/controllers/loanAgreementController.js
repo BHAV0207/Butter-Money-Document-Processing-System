@@ -40,29 +40,27 @@ const replacePlaceholders = (template, data) => {
 // Generate Loan Agreement PDF
 exports.generateAgreement = async (req, res) => {
   try {
-    console.log("Received request to generate agreement:", req.body); // Debug request data
-
     const { templateName, userData } = req.body;
 
     if (!templateName || !userData) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const template = await LoanAgreement.findOne({ templateName });
-
-    if (!template) {
-      return res.status(404).json({ message: "Template not found" });
-    }
-
-    const filledText = replacePlaceholders(template.templateText, userData);
     const filename = `${userData.BORROWER_NAME.replace(/\s+/g, "_")}-loan-agreement.pdf`;
     const pdfPath = path.join(__dirname, `../uploads/${filename}`);
 
-    // Create PDF
+    // Ensure the "uploads" directory exists
+    if (!fs.existsSync(path.join(__dirname, "../uploads"))) {
+      fs.mkdirSync(path.join(__dirname, "../uploads"), { recursive: true });
+    }
+
+    // Generate PDF
     const doc = new PDFDocument();
     const stream = fs.createWriteStream(pdfPath);
     doc.pipe(stream);
-    doc.fontSize(12).text(filledText, { align: "left" });
+    doc.fontSize(12).text(`Loan Agreement for ${userData.BORROWER_NAME}`, { align: "center" });
+    doc.text(`Bank: ${userData.BANK_NAME}`);
+    doc.text(`Address: ${userData.BORROWER_ADDRESS}`);
     doc.end();
 
     stream.on("finish", () => {

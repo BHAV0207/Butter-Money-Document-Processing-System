@@ -1,9 +1,18 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL =
+  "https://butter-money-document-processing-system-1.onrender.com/api/auth";
 
-export const register = async (name: string, email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/register`, { name, email, password });
+export const register = async (
+  name: string,
+  email: string,
+  password: string
+) => {
+  const response = await axios.post(`${API_URL}/register`, {
+    name,
+    email,
+    password,
+  });
   localStorage.setItem("token", response.data.token);
   return response.data;
 };
