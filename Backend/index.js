@@ -23,6 +23,8 @@ app.use("/api/auth", authRoutes);
 const documentRoutes = require("./routes/documentRoutes");
 app.use("/api/documents", documentRoutes);
 
+const loanRoutes = require("./routes/loanRoutes");
+app.use("/api/loan", loanRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
