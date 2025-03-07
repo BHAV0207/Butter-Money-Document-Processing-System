@@ -3,9 +3,15 @@ import { getAuthToken } from "./auth";
 
 const API_URL = "http://localhost:5000/api/loan";
 
-export const generateLoanAgreement = async (templateName: string, userData: any) => {
+export const generateLoanAgreement = async (
+  templateName: string,
+  userData: any
+) => {
   try {
-    console.log("Sending request to generate agreement:", { templateName, userData });
+    console.log("Sending request to generate agreement:", {
+      templateName,
+      userData,
+    });
 
     const response = await axios.post(
       `${API_URL}/generate`,
@@ -23,15 +29,30 @@ export const generateLoanAgreement = async (templateName: string, userData: any)
   }
 };
 
-
-export const downloadAgreement = (filename: string) => {
+export const downloadAgreement = async (filename: string) => {
   if (!filename) {
     console.error("Filename is missing. Cannot download.");
     return;
   }
 
-  const fileUrl = `http://localhost:5000/api/loan/download/${encodeURIComponent(filename)}`;
-  console.log("Downloading file from:", fileUrl);
+  const fileUrl = `${API_URL}/download/${encodeURIComponent(filename)}`;
 
-  window.open(fileUrl, "_blank");
+  try {
+    const response = await axios.get(fileUrl, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+      responseType: "blob", // Ensure we receive a file as a binary response
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
 };

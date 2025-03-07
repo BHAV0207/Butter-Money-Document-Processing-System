@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/template", protect, addTemplate);
 router.post("/generate", protect, generateAgreement);
-router.get("/download/:filename", protect, downloadAgreement);
+router.get("/download/:filename", downloadAgreement); // 🔥 Removed protect middleware
 
 module.exports = router;
